@@ -5,11 +5,20 @@ FROM cm2network/steamcmd:root
 
 LABEL maintainer="walentinlamonos@gmail.com"
 
+RUN apt-get update && apt-get install -y unzip wget ca-certificates
+
 ENV STEAMAPPID 740
 ENV STEAMAPP csgo
 ENV STEAMAPPDIR "${HOMEDIR}/${STEAMAPP}-dedicated"
 ENV DLURL https://raw.githubusercontent.com/darkgallium/csgo-docker
 
+# Download game files directly during the Docker image built
+# This is the main difference with the original image at https://github.com/CM2Walki/CSGO
+
+RUN bash "${STEAMCMDDIR}/steamcmd.sh" +login anonymous \
+				+force_install_dir "${STEAMAPPDIR}" \
+				+app_update "${STEAMAPPID}" \
+				+quit
 # Add entry script
 ADD entry.sh ${HOMEDIR}
 
@@ -40,28 +49,16 @@ ENV SRCDS_FPSMAX=300 \
 	SRCDS_WORKSHOP_AUTHKEY="" \
 	ADDITIONAL_ARGS=""
 
-# Download game files directly during the Docker image built
-# This is the main difference with the original image at https://github.com/CM2Walki/CSGO
-
-RUN bash "${STEAMCMDDIR}/steamcmd.sh" +login anonymous \
-				+force_install_dir "${STEAMAPPDIR}" \
-				+app_update "${STEAMAPPID}" \
-				+quit
-
-
 # Add ESL config
 
 ADD cfg ${STEAMAPPDIR}/${STEAMAPP}/cfg
 
 # Add CSay addon
 
-RUN mkdir -p "${STEAMAPPDIR}/${STEAMAPP}/addons"
 RUN wget http://www.esport-tools.net/download/CSay-CSGO.zip -P /tmp/
-RUN unzip /tmp/CSay-CSGO.zip -d "${STEAMAPPDIR}/${STEAMAPP}/addons" && rm /tmp/CSay-CSGO.zip
+RUN unzip /tmp/CSay-CSGO.zip -d "${STEAMAPPDIR}/${STEAMAPP}" && rm /tmp/CSay-CSGO.zip
 
 USER ${USER}
-
-VOLUME ${STEAMAPPDIR}
 
 WORKDIR ${HOMEDIR}
 

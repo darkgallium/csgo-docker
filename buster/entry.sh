@@ -5,14 +5,12 @@ cd ${STEAMAPPDIR}
 
 # Run CSGO without autoupdate
 bash "${STEAMAPPDIR}/srcds_run" -game "${STEAMAPP}" -console -log on \
-			-steam_dir "${STEAMCMDDIR}" \
 			-usercon \
 			-tickrate "${SRCDS_TICKRATE}" \
 			-port "${SRCDS_PORT}" \
 			+tv_port "${SRCDS_TV_PORT}" \
 			+clientport "${SRCDS_CLIENT_PORT}" \
 			#-maxplayers_override "${SRCDS_MAXPLAYERS}" \
-			+game_type "${SRCDS_GAMETYPE}" \
 			+game_mode "${SRCDS_GAMEMODE}" \
 			+mapgroup "${SRCDS_MAPGROUP}" \
 			+map "${SRCDS_STARTMAP}" \
